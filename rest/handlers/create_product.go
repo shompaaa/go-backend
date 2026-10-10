@@ -10,7 +10,6 @@ import (
 
 func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var newProduct database.Product
-
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&newProduct)
 
@@ -21,8 +20,6 @@ func CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	newProduct.ID = len(database.ProductList) + 1
-	database.ProductList = append(database.ProductList, newProduct)
-
-	util.SendData(w, newProduct, 201)
+	createdProduct := database.Store(newProduct)
+	util.SendData(w, createdProduct, 201)
 }
