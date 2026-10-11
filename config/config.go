@@ -8,18 +8,18 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var configurations Config
+var configurations *Config
 
 type Config struct {
-	Version     string
-	ServiceName string
-	HttpPort    int
+	Version       string
+	ServiceName   string
+	HttpPort      int
 	JwtSercretKey string
 }
 
 func loadConfig() {
-	err:=godotenv.Load()
-	if err != nil{
+	err := godotenv.Load()
+	if err != nil {
 		fmt.Println("Failed to load the env variables", err)
 		os.Exit(1)
 	}
@@ -48,22 +48,24 @@ func loadConfig() {
 		os.Exit(1)
 	}
 
-	jwtSecretKey:= os.Getenv("JWT_SECRET_KEY")
-	if jwtSecretKey ==""{
+	jwtSecretKey := os.Getenv("JWT_SECRET_KEY")
+	if jwtSecretKey == "" {
 		fmt.Println("Jwt secret key is required")
 		os.Exit(1)
 	}
 
-	configurations = Config{
-		Version:     version,
-		ServiceName: serviceName,
-		HttpPort:    int(port), //type casting
+	configurations = &Config{
+		Version:       version,
+		ServiceName:   serviceName,
+		HttpPort:      int(port), //type casting
 		JwtSercretKey: jwtSecretKey,
 	}
 }
 
+func GetConfig() *Config {
+	if configurations == nil {
 
-func GetConfig() Config{
-	loadConfig()
+		loadConfig()
+	}
 	return configurations
 }
