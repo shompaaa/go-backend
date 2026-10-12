@@ -3,7 +3,6 @@ package rest
 import (
 	"ecommerce/config"
 	"ecommerce/rest/handlers/product"
-	"ecommerce/rest/handlers/review"
 	"ecommerce/rest/handlers/user"
 	"ecommerce/rest/middlewares"
 	"fmt"
@@ -15,15 +14,13 @@ type Server struct {
 	cnf            *config.Config
 	productHandler *product.Handler
 	userHandler    *user.Handler
-	reviewHandler *review.Handler
 }
 
-func NewServer(cnf *config.Config, productHandler *product.Handler, userHandler *user.Handler, reviewHandler *review.Handler) *Server {
+func NewServer(cnf *config.Config, productHandler *product.Handler, userHandler *user.Handler) *Server {
 	return &Server{
 		cnf:            cnf,
 		productHandler: productHandler,
 		userHandler:    userHandler,
-		reviewHandler: reviewHandler,
 	}
 }
 
