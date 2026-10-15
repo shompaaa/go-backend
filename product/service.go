@@ -23,8 +23,8 @@ func (svc *service) Get(id int) (*domain.Product, error) {
 	return svc.prdctRepo.Get(id)
 }
 
-func (svc *service) List() ([]*domain.Product, error) {
-	return svc.prdctRepo.List()
+func (svc *service) List(page, limit int64) ([]*domain.Product, error) {
+	return svc.prdctRepo.List(page, limit)
 }
 
 func (svc *service) Update(prdct domain.Product) (*domain.Product, error) {
@@ -32,4 +32,8 @@ func (svc *service) Update(prdct domain.Product) (*domain.Product, error) {
 }
 func (svc *service) Delete(id int) error {
 	return svc.prdctRepo.Delete(id)
+}
+
+func (svc *service) Count() (int64, error){
+	return svc.prdctRepo.Count()
 }

@@ -3,11 +3,11 @@ package repo
 import (
 	"database/sql"
 
-	"github.com/jmoiron/sqlx"
-	"ecommerce/product"
 	"ecommerce/domain"
-)
+	"ecommerce/product"
 
+	"github.com/jmoiron/sqlx"
+)
 
 type ProductRepo interface {
 	product.ProductRepo
@@ -73,8 +73,11 @@ func (r *productRepo) Get(id int) (*domain.Product, error) {
 	return &prd, nil
 }
 
-func (r *productRepo) List() ([]*domain.Product, error) {
-	var prdList []*domain.Product
+func (r *productRepo) List(page, limit int64) ([]*domain.Product, error) {
+
+	offset := ((page - 1) * limit) + 1
+
+	var prdList []*domain.Product //Slice => address, capacity, length
 
 	query := `
 		SELECT 
@@ -83,13 +86,28 @@ func (r *productRepo) List() ([]*domain.Product, error) {
 			description, 
 			price, 
 			img_url 
-			FROM products 
+			FROM products
+			LIMIT $1
+			OFFSET $2; 
 	`
-	err := r.db.Select(&prdList, query)
+	err := r.db.Select(&prdList, query, limit, offset)
 	if err != nil {
 		return nil, err
 	}
 	return prdList, nil
+}
+
+func (r *productRepo) Count() (int64, error) {
+	query := `
+		SELECT COUNT (*)
+		FROM products	
+	`
+	var count int
+	err := r.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return int64(count), nil
 }
 
 func (r *productRepo) Update(p domain.Product) (*domain.Product, error) {
